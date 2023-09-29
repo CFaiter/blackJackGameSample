@@ -5,6 +5,8 @@ def main():
     blackJack.unit()
     blackJack.showField()
     print()
+    # cpu'sのターン
+    blackJack.cpuMode()
     # playerのターン
     blackJack.playerMode()
     # gameMasterのターン

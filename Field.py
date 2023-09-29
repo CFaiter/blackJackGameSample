@@ -7,6 +7,7 @@ class Field:
         self.playingCard = cardList()
         self.gameMaster = gameMaster()
         self.player = player()
+        self.cpu = []
     
     def unit(self):
         self.playingCard.unit()
@@ -15,8 +16,17 @@ class Field:
             self.gameMaster.drowCard(self.playingCard.drowCard())
         for i in range(2):
             self.player.drowCard(self.playingCard.drowCard())
+        cpuNum = 3
+        for i in range(cpuNum):
+            cpu = player()
+            for j in range(2):
+                cpu.drowCard(self.playingCard.drowCard())
+            self.cpu += [cpu]
+
     
     def playerMode(self):
+        print("\nplayerCardDeck")
+        self.player.showHandOfCards()
         while True:
             val = input('\naction: ')
             if val == "hit" or val == "Hit":
@@ -46,6 +56,21 @@ class Field:
         print()
         print("gameMasterCardDeck")
         self.gameMaster.showAllHandOfCards()
+    
+    def cpuMode(self):
+        i = 1
+        for cpu in self.cpu:
+            while True:
+                sumNum = self.getSumNum(cpu.handOfCards)
+                if sumNum >= 17:
+                    break
+                else:
+                    cpu.drowCard(self.playingCard.drowCard()) 
+                    # self.gameMaster.showHandOfCards()
+            print()
+            print("cpu"+str(i))
+            cpu.showHandOfCards()
+            i+=1
 
     def duel(self):
         playerSumNum = self.getSumNum(self.player.handOfCards)
@@ -79,7 +104,10 @@ class Field:
     def showField(self):
         print("gameMasterCardDeck")
         self.gameMaster.showOnlyOneHandOfCards()
-        print()
-        print("playerCardDeck")
+        i = 1
+        for cpu in self.cpu:
+            print("\ncpu"+str(i)+"CardDeck")
+            cpu.showHandOfCards()
+            i += 1
+        print("\nplayerCardDeck")
         self.player.showHandOfCards()
-        
