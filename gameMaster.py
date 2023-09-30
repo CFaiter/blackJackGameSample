@@ -3,6 +3,9 @@ class gameMaster:
     def __init__(self):
         self.handOfCards = []
     
+    def resetHandOfCards(self):
+        self.handOfCards = []
+
     def drowCard(self,card):
         self.handOfCards += [card]
     

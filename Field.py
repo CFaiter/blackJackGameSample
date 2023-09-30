@@ -12,17 +12,27 @@ class Field:
     def unit(self):
         self.playingCard.unit()
         self.playingCard.shuffleCardDeck()
+        self.gameMaster.resetHandOfCards()
+        self.player.resetHandOfCards()
         for i in range(2):
             self.gameMaster.drowCard(self.playingCard.drowCard())
         for i in range(2):
             self.player.drowCard(self.playingCard.drowCard())
+        self.player.addchip(1000)
         cpuNum = 3
+        self.cpu = []
         for i in range(cpuNum):
             cpu = player()
+            cpu.resetHandOfCards()
             for j in range(2):
                 cpu.drowCard(self.playingCard.drowCard())
             self.cpu += [cpu]
 
+    def callBetChip(self):
+        val = input('\n:How many chips do you want to bet?: ')
+        playerBetChip = int(val)
+        self.player.betChip(playerBetChip)
+        return playerBetChip
     
     def playerMode(self):
         print("\nplayerCardDeck")
@@ -38,9 +48,7 @@ class Field:
                 break
             else:
                 pass
-
             if sumNum > 21:
-                # print("\nBurst!!!")
                 break
             
 
@@ -72,25 +80,13 @@ class Field:
             cpu.showHandOfCards()
             i+=1
 
-    def duel(self):
-        playerSumNum = self.getSumNum(self.player.handOfCards)
-        gameMasterSumNum = self.getSumNum(self.gameMaster.handOfCards)
-        if playerSumNum < 22 and gameMasterSumNum >= 22:
-            print("player Win")
-        elif playerSumNum >= 22 and gameMasterSumNum < 22:
-            print("player Lose")
-        elif playerSumNum > gameMasterSumNum:
-            print("player Win")
-        elif playerSumNum < gameMasterSumNum:
-            print("player Lose")
-        else:
-            print("Drow")
-
     def getSumNum(self,cardDeck):
-        cardDeck.sort(key=lambda x: x.number, reverse=True)
-        sumNum = 0
+        tmpCardDeck = []
         for card in cardDeck:
-                num = card.number
+            tmpCardDeck += [card.number]
+        tmpCardDeck.sort(reverse=True)
+        sumNum = 0
+        for num in tmpCardDeck:
                 if num > 10:
                     sumNum += 10
                 elif num == 1 and sumNum + 11 > 21:
@@ -100,6 +96,38 @@ class Field:
                 else:
                     sumNum += num
         return sumNum
+
+    def duel(self):
+        status = ""
+        playerSumNum = self.getSumNum(self.player.handOfCards)
+        gameMasterSumNum = self.getSumNum(self.gameMaster.handOfCards)
+        if playerSumNum < 22 and gameMasterSumNum >= 22:
+            print("player Win")
+            status = "Win"
+        elif playerSumNum >= 22 and gameMasterSumNum < 22:
+            print("player Lose")
+            status = "Lose"
+        elif playerSumNum > gameMasterSumNum:
+            print("player Win")
+            status = "Win"
+        elif playerSumNum < gameMasterSumNum:
+            print("player Lose")
+            status = "Lose"
+        else:
+            print("Drow")
+            status = "Drow"
+        return status
+
+    def returnChip(self,status,betChip):
+        if status == "Win":
+            print(str(betChip*2)+"枚ゲット")
+            self.player.addchip(betChip*2)
+        elif status == "Drow":
+            print(str(betChip)+"枚ゲット")
+            self.player.addchip(betChip)
+        else:
+            pass   
+        print("現在"+str(self.player.chip)+"枚")
 
     def showField(self):
         print("gameMasterCardDeck")
