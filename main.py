@@ -2,9 +2,10 @@ from Field import Field
 
 def main():
     blackJack = Field()
+    blackJack.changeChip(1000)
     while True:
         blackJack.unit()
-        playerBetChip = blackJack.callBetChip()
+        blackJack.callBetChip()
         blackJack.showField()
         print()
         # cpu'sのターン
@@ -17,7 +18,7 @@ def main():
         # Duel!
         print("\nDuel!")
         status = blackJack.duel()
-        blackJack.returnChip(status,playerBetChip)
+        blackJack.returnChip(status)
 
 if __name__ == '__main__':
     main()

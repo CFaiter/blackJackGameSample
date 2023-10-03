@@ -17,8 +17,10 @@ class player:
         if self.chip-chip >= 0:
             print(str(chip)+"枚ベット")
             self.chip -= chip
+            return True
         else:
             print("チップが足りません！")
+            return False
 
     def showHandOfCards(self):
         # ♠♡♢♣♤♥♦♧
