@@ -4,9 +4,10 @@ from baccarat import baccarat
 def main():
     while True:
         val = input("which game do you play? blackJack or baccarat: ")
+        chip = input("How many chips do you want to change?")
         if val == "blackJack":
             game = blackJack()
-            game.changeChip(10000)
+            game.changeChip(int(chip))
             while True:
                 game.unit(3)
                 game.callBetChip()
@@ -34,7 +35,7 @@ def main():
             # 条件に応じてカードを配る
             # 勝者を決めて、配当を得る　勝者を当てたら賭けたチップ２倍　Drow当てたら9倍
             game = baccarat()
-            game.changeChip(10000)
+            game.changeChip(int(chip))
 
             while True:
                 # カードデッキを初期化
