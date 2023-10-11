@@ -1,0 +1,307 @@
+<style type="text/css">
+    body {
+        background-color: #486d46;
+        /* 背景色 */
+        background-image: url("./img/backgraund.jpg");
+        /* 画像 */
+        background-size: cover;
+        /* 全画面 */
+        background-attachment: fixed;
+        /* 固定 */
+        background-position: center center;
+        /* 縦横中央 */
+    }
+
+    .aaaa {
+        text-align: center;
+    }
+
+    .container {
+        font-family: arial;
+        font-size: 24px;
+        /* margin: 25px; */
+        width: 100%;
+        height: 100%;
+        /* outline: dashed 3px red; */
+        position: relative;
+    }
+
+    .childposUP {
+        /* 水平方向の中央揃え */
+        position: absolute;
+        top: 10%;
+        left: 50%;
+        transform: translate(-50%, 0%);
+    }
+
+    .childposDown {
+        /* 水平方向の中央揃え */
+        position: absolute;
+        top: 80%;
+        left: 50%;
+        transform: translate(-50%, -100%);
+    }
+
+    .btnPos {
+        /* 水平方向の中央揃え */
+        position: absolute;
+        top: 80%;
+        left: 80%;
+        transform: translate(-80%, -100%);
+    }
+
+    .btnSize {
+        font-size: 150%;
+    }
+
+    .textPos {
+        font-size: 300%;
+        color: red;
+        /* 水平方向の中央揃え */
+        position: absolute;
+        top: 50%;
+        left: 70%;
+        transform: translate(0%, 0%);
+    }
+</style>
+
+<html>
+
+<body>
+    <div class="aaaa">
+        <div class="container">
+            <div id="addDealerCard" class="childposUP">
+                <!-- <img src="./img/cards/spade1.png" width="100px" height="150px"> -->
+            </div>
+            <div id="addCard" class="childposDown">
+                <!-- <img src="./img/cards/spade1.png" width="100px" height="150px"> -->
+                <!-- <img src="./img/cards/spade1.png" width="100px" height="150px"> -->
+            </div>
+            <div class="btnPos">
+                <input type="button" onclick="" value="double" class="btnSize">
+                <input type="button" onclick="actionHit()" value="hit" class="btnSize">
+                <input type="button" onclick="actionStand()" value="stand" class="btnSize">
+                <input type="button" onclick="resetCards()" value="reset" class="btnSize">
+            </div>
+            <div class="textPos">
+                <p id="changeText"></p>
+            </div>
+        </div>
+    </div>
+    <script>
+        let playerDeckNum = []
+        let playerDeckType = []
+        let dealerDeckNum = []
+        let dealerDeckType = []
+        let deckNum = [];
+        let deckType = [];
+        function actionHit() {
+            let cardNum = deckNum.pop();
+            let cardType = deckType.pop();
+            addCards(cardNum,cardType);
+            playerDeckNum.push(cardNum);
+            playerDeckType.push(cardType);
+            console.log("総数(player): " + String(playerDeckNumSum()));
+            console.log("playerDeck");
+            showPlayerDeck();
+        }
+        function addCards(cardNum,cardType) {
+            // img要素を作成
+            let img_element = document.createElement('img');
+            img_element.src = createImgURL(cardNum,cardType); // 画像パス
+            img_element.width = 100; // 横サイズ（px）
+            img_element.height = 150; // 縦サイズ（px）
+
+            // 指定した要素にimg要素を挿入
+            let addCard = document.getElementById("addCard");
+            addCard.appendChild(img_element);
+            // let num = Math.floor(Math.random() * 10)%5;
+        }
+
+        function createImgURL(cardNum,cardType){
+            let urlText = "./img/cards/";
+            urlText += cardType+String(cardNum)+".png";
+            return urlText;
+        }
+
+        function addDealerCard(cardNum,cardType) {
+            // img要素を作成
+            let img_element = document.createElement('img');
+            img_element.src = createImgURL(cardNum,cardType); // 画像パス
+            img_element.width = 100; // 横サイズ（px）
+            img_element.height = 150; // 縦サイズ（px）
+
+            // 指定した要素にimg要素を挿入
+            let addCard = document.getElementById("addDealerCard");
+            addCard.appendChild(img_element);
+        }
+
+        function playerDeckNumSum() {
+            let total = 0
+            tmp = playerDeckNum;
+            tmp.reverse();
+            for (let i = 0; i < tmp.length; i++) {
+                num = tmp[i];
+                if(num >= 10){
+                    total += 10;
+                }
+                else if(num == 1 && total+11 <= 21){
+                    total += 11;
+                }
+                else{
+                    total += Number(num);
+                }
+            }
+            console.log("プレイヤートータル: " + String(total));
+            return total;
+        }
+
+        function dealerDeckNumSum() {
+            let total = 0
+            tmp = dealerDeckNum;
+            tmp.reverse();
+            for (let i = 0; i < dealerDeckNum.length; i++) {
+                num = tmp[i];
+                if(num >= 10){
+                    total += 10;
+                }
+                else if(num == 1 && total+11 <= 21){
+                    total += 11;
+                }
+                else{
+                    total += Number(num);
+                }
+            }
+            console.log("ディーラートータル: " + String(total));
+            return total;
+        }
+
+        function actionStand() {
+            let dealerSum = 0;
+            let playerSum = 0;
+            while (true) {
+                if (dealerSum >= 17) {
+                    break;
+                }
+                let cardNum = deckNum.pop();
+                let cardType = deckType.pop();
+                dealerDeckNum.push(cardNum);
+                dealerDeckType.push(cardType);
+                dealerSum = dealerDeckNumSum();
+                addDealerCard(cardNum,cardType);
+            }
+            playerSum = playerDeckNumSum();
+            console.log("総数(player): " + String(playerSum));
+            console.log("playerDeck");
+            showPlayerDeck();
+            console.log("総数(dealer): " + String(dealerSum));
+            console.log("dealerDeck");
+            showDealerDeck();
+            duel(playerSum,dealerSum);
+        }
+
+        function duel(playerSum,dealerSum){
+            element = document.querySelector('#changeText');
+            if(playerSum >= 22 && dealerSum >= 22){
+                element.innerHTML = "Lose!";
+            }
+            else if(playerSum < 22 && dealerSum >= 22){
+                element.innerHTML = "Win!";
+            }
+            else if(playerSum >= 22 && dealerSum < 22){
+                element.innerHTML = "Lose!";
+            }
+            else if(playerSum > dealerSum){
+                element.innerHTML = "Win!";
+            }
+            else if(playerSum < dealerSum){
+                element.innerHTML = "Lose!";
+            }
+            else{
+                element.innerHTML = "Drow!";
+            }
+        }
+
+        function resetCards() {
+            // 指定した要素を削除
+            document.querySelector('#changeText').innerHTML = "";
+            document.querySelector('#addCard').innerHTML = ``;
+            document.querySelector('#addDealerCard').innerHTML = '';
+            unitDeck();
+            playerDeckNum = [];
+            playerDeckType = [];
+            dealerDeckNum = [];
+            dealerDeckType = [];
+            let cardNum = deckNum.pop();
+            let cardType = deckType.pop();
+            dealerDeckNum.push(cardNum);
+            dealerDeckType.push(cardType);
+            addDealerCard(cardNum,cardType);
+            for (let i = 0; i < 2; i++) {
+                cardNum = deckNum.pop();
+                cardType = deckType.pop();
+                playerDeckNum.push(cardNum);
+                playerDeckType.push(cardType);
+                addCards(cardNum,cardType);
+            }
+            console.log("総数(player): " + String(playerDeckNumSum()));
+            console.log("playerDeck");
+            showPlayerDeck();
+            console.log("総数(dealer): " + String(dealerDeckNumSum()));
+            console.log("dealerDeck");
+            showDealerDeck();
+        }
+
+        function unitDeck() {
+            tmpDeckNum = [];
+            tmpDeckType = [];
+            deckElement = [];
+            type = ["spade", "heart", "diamond", "club"]
+            for (let i = 0; i < 4; i++) {
+                for (let j = 0; j < 13; j++) {
+                    tmpDeckNum.push(Number(j + 1));
+                    tmpDeckType.push(type[i]);
+                    deckElement.push(i * 13 + j);
+                }
+            }
+            deckElement = arrayShuffle(deckElement);
+            deckNum = [];
+            deckType = [];
+            for (let i = 0; i < 4; i++) {
+                for (let j = 0; j < 13; j++) {
+                    let num = deckElement[i * 13 + j]
+                    deckNum.push(tmpDeckNum[num]);
+                    deckType.push(tmpDeckType[num]);
+                }
+            }
+        }
+
+        function arrayShuffle(array) {
+            for (let i = (array.length - 1); 0 < i; i--) {
+
+                // 0〜(i+1)の範囲で値を取得
+                let r = Math.floor(Math.random() * (i + 1));
+
+                // 要素の並び替えを実行
+                let tmp = array[i];
+                array[i] = array[r];
+                array[r] = tmp;
+            }
+            return array;
+        }
+
+        function showPlayerDeck(){
+            for(let i = 0;i < playerDeckNum.length;i++){
+                console.log(playerDeckType[i]+" "+String(playerDeckNum[i]));
+            }
+        }
+
+        function showDealerDeck(){
+            for(let i = 0;i < dealerDeckNum.length;i++){
+                console.log(dealerDeckType[i]+" "+String(dealerDeckNum[i]));
+            }
+        }
+    </script>
+</body>
+
+</html>
