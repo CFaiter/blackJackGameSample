@@ -1,4 +1,5 @@
 from Field import Field
+import BasicStrategy_basic
 
 class blackJack(Field):
     # blackJack
@@ -7,6 +8,8 @@ class blackJack(Field):
         self.player.showHandOfCards()
         burstRate = self.burstRate()
         print("\nバースト率: "+str(burstRate)+"%")
+        recommendedAction = self.recommendedAction()
+        print("\n推奨アクション: ",recommendedAction)
         while True:
             val = input('\naction: ')
             if val == "hit" or val == "Hit":
@@ -16,6 +19,8 @@ class blackJack(Field):
                 self.player.showHandOfCards()
                 burstRate = self.burstRate()
                 print("\nバースト率: "+str(burstRate)+"%")
+                recommendedAction = self.recommendedAction()
+                print("\n推奨アクション: ",recommendedAction)
             elif val == "stand" or val == "Stand":
                 break
             elif val == "double up" or "double":
@@ -65,6 +70,19 @@ class blackJack(Field):
                 burstRate += cardNums[i]
             burstRate /= remainingCards
         return burstRate*100
+
+    def recommendedAction(self):
+        action = ""
+        gameMasterCardNum = self.gameMaster.handOfCards[0].number
+        if gameMasterCardNum > 10:
+            gameMasterCardNum = 10
+        if self.getSumNum(self.player.handOfCards) <= 8:
+            action = BasicStrategy_basic.list[0][gameMasterCardNum-1]
+        elif self.getSumNum(self.player.handOfCards) >= 17:
+            action = BasicStrategy_basic.list[9][gameMasterCardNum-1]
+        else:
+            action = BasicStrategy_basic.list[self.getSumNum(self.player.handOfCards)%9+1][gameMasterCardNum-1]
+        return action
 
     def gameMasterMode(self):
         # self.gameMaster.showHandOfCards()
