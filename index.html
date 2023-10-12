@@ -46,22 +46,35 @@
         /* 水平方向の中央揃え */
         position: absolute;
         top: 80%;
-        left: 80%;
+        left: 90%;
         transform: translate(-80%, -100%);
     }
 
     .btnSize {
-        font-size: 150%;
+        font-size: 200%;
     }
 
     .textPos {
-        font-size: 300%;
+        font-size: 250%;
         color: red;
         /* 水平方向の中央揃え */
         position: absolute;
-        top: 50%;
-        left: 70%;
-        transform: translate(0%, 0%);
+        top: 60%;
+        left: 90%;
+        transform: translate(-80%, -100%);
+    }
+
+    .recommendAction {
+        font-size: 150%;
+        color: red;
+        height: 150px;
+        width: 300px;
+        /* 水平方向の中央揃え */
+        position: absolute;
+        top: 88%;
+        left: 95%;
+        transform: translate(-80%, -100%);
+        /* outline: dashed 3px red; */
     }
 </style>
 
@@ -86,31 +99,38 @@
             <div class="textPos">
                 <p id="changeText"></p>
             </div>
+            <div class="recommendAction">
+                <p id="action">推奨アクション: ？</p>
+            </div>
         </div>
     </div>
     <script>
-        let playerDeckNum = []
-        let playerDeckType = []
-        let dealerDeckNum = []
-        let dealerDeckType = []
+        let playerDeckNum = [];
+        let playerDeckType = [];
+        let dealerDeckNum = [];
+        let dealerDeckType = [];
         let deckNum = [];
         let deckType = [];
         function actionHit() {
+            if (deckNum.length == 0) {
+                unitDeck();
+            }
             let cardNum = deckNum.pop();
             let cardType = deckType.pop();
-            addCards(cardNum,cardType);
+            addCards(cardNum, cardType);
             playerDeckNum.push(cardNum);
             playerDeckType.push(cardType);
+            recommendAction();
             console.log("総数(player): " + String(playerDeckNumSum()));
             console.log("playerDeck");
             showPlayerDeck();
         }
-        function addCards(cardNum,cardType) {
+        function addCards(cardNum, cardType) {
             // img要素を作成
             let img_element = document.createElement('img');
-            img_element.src = createImgURL(cardNum,cardType); // 画像パス
-            img_element.width = 100; // 横サイズ（px）
-            img_element.height = 150; // 縦サイズ（px）
+            img_element.src = createImgURL(cardNum, cardType); // 画像パス
+            img_element.width = 140; // 横サイズ（px）
+            img_element.height = 210; // 縦サイズ（px）
 
             // 指定した要素にimg要素を挿入
             let addCard = document.getElementById("addCard");
@@ -118,18 +138,18 @@
             // let num = Math.floor(Math.random() * 10)%5;
         }
 
-        function createImgURL(cardNum,cardType){
+        function createImgURL(cardNum, cardType) {
             let urlText = "./img/cards/";
-            urlText += cardType+String(cardNum)+".png";
+            urlText += cardType + String(cardNum) + ".png";
             return urlText;
         }
 
-        function addDealerCard(cardNum,cardType) {
+        function addDealerCard(cardNum, cardType) {
             // img要素を作成
             let img_element = document.createElement('img');
-            img_element.src = createImgURL(cardNum,cardType); // 画像パス
-            img_element.width = 100; // 横サイズ（px）
-            img_element.height = 150; // 縦サイズ（px）
+            img_element.src = createImgURL(cardNum, cardType); // 画像パス
+            img_element.width = 140; // 横サイズ（px）
+            img_element.height = 210; // 縦サイズ（px）
 
             // 指定した要素にimg要素を挿入
             let addCard = document.getElementById("addDealerCard");
@@ -142,13 +162,13 @@
             tmp.reverse();
             for (let i = 0; i < tmp.length; i++) {
                 num = tmp[i];
-                if(num >= 10){
+                if (num >= 10) {
                     total += 10;
                 }
-                else if(num == 1 && total+11 <= 21){
+                else if (num == 1 && total + 11 <= 21) {
                     total += 11;
                 }
-                else{
+                else {
                     total += Number(num);
                 }
             }
@@ -162,13 +182,13 @@
             tmp.reverse();
             for (let i = 0; i < dealerDeckNum.length; i++) {
                 num = tmp[i];
-                if(num >= 10){
+                if (num >= 10) {
                     total += 10;
                 }
-                else if(num == 1 && total+11 <= 21){
+                else if (num == 1 && total + 11 <= 21) {
                     total += 11;
                 }
-                else{
+                else {
                     total += Number(num);
                 }
             }
@@ -183,12 +203,15 @@
                 if (dealerSum >= 17) {
                     break;
                 }
+                if (deckNum.length == 0) {
+                    unitDeck();
+                }
                 let cardNum = deckNum.pop();
                 let cardType = deckType.pop();
                 dealerDeckNum.push(cardNum);
                 dealerDeckType.push(cardType);
                 dealerSum = dealerDeckNumSum();
-                addDealerCard(cardNum,cardType);
+                addDealerCard(cardNum, cardType);
             }
             playerSum = playerDeckNumSum();
             console.log("総数(player): " + String(playerSum));
@@ -197,27 +220,27 @@
             console.log("総数(dealer): " + String(dealerSum));
             console.log("dealerDeck");
             showDealerDeck();
-            duel(playerSum,dealerSum);
+            duel(playerSum, dealerSum);
         }
 
-        function duel(playerSum,dealerSum){
+        function duel(playerSum, dealerSum) {
             element = document.querySelector('#changeText');
-            if(playerSum >= 22 && dealerSum >= 22){
+            if (playerSum >= 22 && dealerSum >= 22) {
                 element.innerHTML = "Lose!";
             }
-            else if(playerSum < 22 && dealerSum >= 22){
+            else if (playerSum < 22 && dealerSum >= 22) {
                 element.innerHTML = "Win!";
             }
-            else if(playerSum >= 22 && dealerSum < 22){
+            else if (playerSum >= 22 && dealerSum < 22) {
                 element.innerHTML = "Lose!";
             }
-            else if(playerSum > dealerSum){
+            else if (playerSum > dealerSum) {
                 element.innerHTML = "Win!";
             }
-            else if(playerSum < dealerSum){
+            else if (playerSum < dealerSum) {
                 element.innerHTML = "Lose!";
             }
-            else{
+            else {
                 element.innerHTML = "Drow!";
             }
         }
@@ -236,13 +259,13 @@
             let cardType = deckType.pop();
             dealerDeckNum.push(cardNum);
             dealerDeckType.push(cardType);
-            addDealerCard(cardNum,cardType);
+            addDealerCard(cardNum, cardType);
             for (let i = 0; i < 2; i++) {
                 cardNum = deckNum.pop();
                 cardType = deckType.pop();
                 playerDeckNum.push(cardNum);
                 playerDeckType.push(cardType);
-                addCards(cardNum,cardType);
+                addCards(cardNum, cardType);
             }
             console.log("総数(player): " + String(playerDeckNumSum()));
             console.log("playerDeck");
@@ -250,6 +273,7 @@
             console.log("総数(dealer): " + String(dealerDeckNumSum()));
             console.log("dealerDeck");
             showDealerDeck();
+            recommendAction();
         }
 
         function unitDeck() {
@@ -290,16 +314,54 @@
             return array;
         }
 
-        function showPlayerDeck(){
-            for(let i = 0;i < playerDeckNum.length;i++){
-                console.log(playerDeckType[i]+" "+String(playerDeckNum[i]));
+        function showPlayerDeck() {
+            for (let i = 0; i < playerDeckNum.length; i++) {
+                console.log(playerDeckType[i] + " " + String(playerDeckNum[i]));
             }
         }
 
-        function showDealerDeck(){
-            for(let i = 0;i < dealerDeckNum.length;i++){
-                console.log(dealerDeckType[i]+" "+String(dealerDeckNum[i]));
+        function showDealerDeck() {
+            for (let i = 0; i < dealerDeckNum.length; i++) {
+                console.log(dealerDeckType[i] + " " + String(dealerDeckNum[i]));
             }
+        }
+
+        function recommendAction() {
+            let recommendActionList =
+                [
+                    ["hit", "hit", "hit", "hit", "hit", "hit", "hit", "hit", "hit", "hit"],
+                    ["hit", "hit", "double", "double", "double", "double", "hit", "hit", "hit", "hit"],
+                    ["hit", "double", "double", "double", "double", "double", "double", "double", "double", "hit"],
+                    ["hit", "double", "double", "double", "double", "double", "double", "double", "double", "double"],
+                    ["hit", "hit", "hit", "stand", "stand", "stand", "hit", "hit", "hit", "hit"],
+                    ["hit", "stand", "stand", "stand", "stand", "stand", "hit", "hit", "hit", "hit"],
+                    ["hit", "stand", "stand", "stand", "stand", "stand", "hit", "hit", "hit", "hit"],
+                    ["hit", "stand", "stand", "stand", "stand", "stand", "hit", "hit", "hit", "stand?"],
+                    ["stand?", "stand", "stand", "stand", "stand", "stand", "hit", "hit", "stand?", "stand?"],
+                    ["stand", "stand", "stand", "stand", "stand", "stand", "stand", "stand", "stand", "stand"]
+                ];
+            // let num = Math.floor(Math.random() * 10 % 2);
+            // console.log(recommendActionList[0][0]);
+            action = "推奨アクション: ";
+            num = dealerDeckNum[0];
+            let playerDeckSum = playerDeckNumSum();
+            console.log("合計(player): "+String(playerDeckSum));
+            if(num >= 10){
+                num = 10;
+            }
+            if(playerDeckSum <= 8){
+                action += recommendActionList[0][num-1];
+                console.log(recommendActionList[0][num-1]);
+            }
+            else if(playerDeckSum >= 17){
+                action += recommendActionList[9][num-1];
+                console.log(recommendActionList[9][num-1]);
+            }
+            else{
+                action += recommendActionList[playerDeckSum%9+1][num-1];
+                console.log(recommendActionList[playerDeckSum%9+1][num-1]);
+            }
+            document.querySelector('#action').innerHTML = action;
         }
     </script>
 </body>
